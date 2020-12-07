@@ -3,6 +3,8 @@ Indaplus20 task 13 &amp; 14 multiplayer spel inspirerat av [boxhead 2play](https
 
 Skapad av [@alaad](https://gits-15.sys.kth.se/alaad) och [@nilszen](https://gits-15.sys.kth.se/nilszen).
 
+[Ersode repo](https://gits-15.sys.kth.se/ersode/indaplus20/tree/master/task-13-14).
+
 ## Information och krav
 Ni har redan blivit indelade i grupper. Om du ej blivit indelad, och ångrat dig och vill vara med i ett projekt, PMa mig på Discord ASAP.
 
