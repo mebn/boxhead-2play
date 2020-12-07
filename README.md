@@ -1,7 +1,9 @@
 # boxhead-2play
-Task 13 &amp; 14 Multiplayer Game!
+Indaplus20 task 13 &amp; 14 multiplayer spel inspirerat av [boxhead 2play](https://www.crazygames.se/spel/boxhead-2play-rooms)!
 
-## Info
+Skapad av [@alaad](https://gits-15.sys.kth.se/alaad) och [@nilszen](https://gits-15.sys.kth.se/nilszen).
+
+## Information och krav
 Ni har redan blivit indelade i grupper. Om du ej blivit indelad, och ångrat dig och vill vara med i ett projekt, PMa mig på Discord ASAP.
 
 Uppgiften är att skapa ett spel med multiplayer-capabilities och grafik. Börja med detta:
