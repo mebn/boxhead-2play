@@ -1,4 +1,5 @@
 import socket
+import codes
 
 SIZE = 128
 
@@ -10,6 +11,7 @@ class Network():
 
         self.pos = self.connect()
 
+    # Connects to server, gets starting pos of both players and stores it in self.pos.
     def connect(self):
         try:
             self.client.connect((self.server, self.port))
@@ -17,6 +19,7 @@ class Network():
         except:
             pass
 
+    # Gets a formated position as ((x1,y1), (x2,y2))
     def get_starting_pos(self):
         pos = self.pos.split(";")
         p1_pos_tup = str_to_tup(pos[0])
@@ -24,9 +27,12 @@ class Network():
         
         return p1_pos_tup, p2_pos_tup # ((x1,y1), (x2,y2))
 
+    # Takes player 1:s keystrokes as boollist. 
+    # Updates position on server side.
+    # Returns formatted position to be used when drawing on client side.
     def get_players_updated_pos(self, direction):
         try:
-            self.client.send(direction)
+            self.client.send(codes.player_movement + direction)
 
             pos = self.client.recv(SIZE).decode()
             pos = pos.split(";")
@@ -39,6 +45,8 @@ class Network():
 
 ##### private functions #####
 
+# Takes a string and format it into a int tuple.
+# Returns tuple.
 def str_to_tup(xy):
     xy = xy.split(",")
     return int(xy[0]), int(xy[1])

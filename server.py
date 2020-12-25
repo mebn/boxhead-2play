@@ -1,52 +1,61 @@
 import socket
 import threading
+import dimensions
+import codes
 
 ADDRESS = "127.0.0.1"
 PORT = 8888
 SIZE = 128
 
+# server setup stuff
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 server.bind((ADDRESS, PORT))
 server.listen(2)
 print("server started...")
 
-players_pos = [(0, 0), (400, 400)]
+# keep track of important stuff to be sent to clients.
+players_pos = [[0, 0], [400, 400]]
+player_hp = [100, 100]
+enemies_pos = [[100, 200], [200, 100]] # ex. 2 enemies from the beginning.
 
+# Takes a list with bools and player (1 or 2).
+# Moves the player on server side.
+# Includes wall detection.
 def update_pos(direction, player):
     movement_speed = 5
-
-    # left
-    if direction[2]:
-        x, y = players_pos[player]
-        x -= movement_speed
-        players_pos[player] = (x, y)
-    
-    # right
-    if direction[3]:
-        x, y = players_pos[player]
-        x += movement_speed
-        players_pos[player] = (x, y)
+    x = players_pos[player][0]
+    y = players_pos[player][1]
 
     # up
-    if direction[0]:
-        x, y = players_pos[player]
+    if direction[0] and y >= 0:
         y -= movement_speed
-        players_pos[player] = (x, y)
 
     # down
-    if direction[1]:
-        x, y = players_pos[player]
+    if direction[1] and y <= dimensions.HEIGHT - dimensions.PLAYER_HEIGHT:
         y += movement_speed
-        players_pos[player] = (x, y)
+
+    # left
+    if direction[2] and x >= 0:
+        x -= movement_speed
+    
+    # right
+    if direction[3] and x <= dimensions.WIDTH - dimensions.PLAYER_WIDTH:
+        x += movement_speed
+
+    players_pos[player][0] = x
+    players_pos[player][1] = y
 
 
-def tup_to_str(tup):
-    return str(tup[0]) + "," + str(tup[1])
+# Used to turn a list of 2 elements into a comma seperated list.
+# Used in all_pos_to_str()
+def player_pos_to_str(player_pos):
+    return str(player_pos[0]) + "," + str(player_pos[1])
 
-def pos_to_str(player):
-    player1_coords = tup_to_str(players_pos[0])
-    player2_coords = tup_to_str(players_pos[1])
+# Returns "x1,y1;x2,y2" and makes sure every client is player 1.
+def all_pos_to_str(player):
+    player1_coords = player_pos_to_str(players_pos[0])
+    player2_coords = player_pos_to_str(players_pos[1])
 
     if player == 0:
         return f"{player1_coords};{player2_coords}"
@@ -54,11 +63,11 @@ def pos_to_str(player):
         return f"{player2_coords};{player1_coords}"
 
 
+# A thread that starts when a new clients connects.
 def client_thread(conn, player):
-    # need to call pos_to_string(<data to send>).encode() before sending data to client
-
-    reply = pos_to_str(player).encode()
-    conn.send(reply)
+    # this only send one time, when connecting.
+    reply = all_pos_to_str(player).encode()
+    conn.send(reply) # sends starting pos.
 
     while True:
         try:
@@ -68,9 +77,24 @@ def client_thread(conn, player):
                 print("disconnected")
                 break
 
-            update_pos(data, player)
-            reply = pos_to_str(player).encode()
-            conn.send(reply)
+            code = data[:2] # can be between 00 and 99 codes. (100 events)
+            data = data[2:]
+
+            # handle movement
+            if code == codes.player_movement:
+                update_pos(data, player)
+                reply = all_pos_to_str(player).encode()
+                conn.send(reply)
+
+            if code == codes.enemies_position:
+                pass
+
+            if code == codes.player_hp:
+                pass
+
+            if code == codes.bullets_position:
+                pass
+
         except:
             break
 

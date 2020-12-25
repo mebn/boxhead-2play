@@ -1,12 +1,7 @@
 import pygame
 from player import Player
 from network import Network
-
-w = h = 500
-win = pygame.display.set_mode((w, h))
-pygame.display.set_caption("client")
-
-client_number = 0
+import dimensions
 
 def redraw_window(win, player1, player2):
     win.fill((255, 255, 255))
@@ -17,11 +12,14 @@ def redraw_window(win, player1, player2):
 
 
 def main():
+    win = pygame.display.set_mode((dimensions.WIDTH, dimensions.HEIGHT))
+    pygame.display.set_caption("client")
+    
     network = Network()
     player1_pos, player2_pos = network.get_starting_pos()
 
-    player1 = Player(player1_pos, 100, 100, (0, 255, 0))
-    player2 = Player(player2_pos, 100, 100, (255, 0, 0))
+    player1 = Player(player1_pos, dimensions.PLAYER_WIDTH, dimensions.PLAYER_HEIGHT, (0, 255, 0))
+    player2 = Player(player2_pos, dimensions.PLAYER_WIDTH, dimensions.PLAYER_HEIGHT, (255, 0, 0))
     
     clock = pygame.time.Clock()
 
