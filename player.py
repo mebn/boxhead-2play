@@ -1,14 +1,15 @@
 import pygame
 
 class Player():
-    def __init__(self, x, y, width, height, color):
-        self.x = x
-        self.y = y
+    def __init__(self, pos, width, height, color):
+        self.x = pos[0]
+        self.y = pos[1]
         self.width = width
         self.height = height
         self.color = color
-        self.rect = (x, y, width, height)
         self.vel = 5
+
+        self.rect = (self.x, self.y, self.width, self.height)
 
     def draw(self, win):
         pygame.draw.rect(win, self.color, self.rect)
@@ -34,6 +35,6 @@ class Player():
     def update_draw(self):
         self.rect = (self.x, self.y, self.width, self.height)
 
-    def update_pos(self, x, y):
-        self.x = x
-        self.y = y
+    def update_pos(self, pos):
+        self.x = pos[0]
+        self.y = pos[1]

@@ -56,8 +56,10 @@ def pos_to_str(player):
 
 
 def client_thread(conn, player):
-    reply = pos_to_str(player)
-    conn.send(reply.encode())
+    # need to call pos_to_string before sending data to client
+
+    reply = pos_to_str(player).encode()
+    conn.send(reply)
 
     while True:
         try:
