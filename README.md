@@ -10,6 +10,10 @@ I en terminal, kör `python3 server.py` för att starta servern.
 
 Kör sedan `python3 client.py` i två andra terminaler för att få två spelare som man kan styra med piltangenterna!
 
+### Hur fungerar koden?
+Tänker mig att man skickar en kod (tal mellan `00` och `99`) tillsammans med datan man vill skicka till servern. Beroende på koden får man tillbaka rätt data som man då kan använda till något på client side.
+
+
 ## Information och krav
 Ni har redan blivit indelade i grupper. Om du ej blivit indelad, och ångrat dig och vill vara med i ett projekt, PMa mig på Discord ASAP.
 
