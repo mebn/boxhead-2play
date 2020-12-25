@@ -47,8 +47,8 @@ def main():
             x2, y2 = get_pos(player2_pos)
 
             # update positions for player 1 och 2.
-            player1.update_pos(x1, x1)
-            player2.update_pos(x2, x2)
+            player1.update_pos(x1, y1)
+            player2.update_pos(x2, y2)
         
         player1.update_draw()
         player2.update_draw()
