@@ -44,7 +44,6 @@ def update_pos(direction, player):
 def tup_to_str(tup):
     return str(tup[0]) + "," + str(tup[1])
 
-
 def pos_to_str(player):
     player1_coords = tup_to_str(players_pos[0])
     player2_coords = tup_to_str(players_pos[1])
@@ -56,7 +55,7 @@ def pos_to_str(player):
 
 
 def client_thread(conn, player):
-    # need to call pos_to_string before sending data to client
+    # need to call pos_to_string(<data to send>).encode() before sending data to client
 
     reply = pos_to_str(player).encode()
     conn.send(reply)
@@ -84,7 +83,7 @@ while True:
     conn, addr = server.accept()
     print("new connection from", addr)
 
-    thread = threading. Thread(target=client_thread, args=(conn, player_number))
+    thread = threading.Thread(target=client_thread, args=(conn, player_number))
     thread.start()
 
     player_number += 1

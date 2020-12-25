@@ -19,8 +19,8 @@ class Network():
 
     def get_starting_pos(self):
         pos = self.pos.split(";")
-        p1_pos_tup = get_pos(pos[0])
-        p2_pos_tup = get_pos(pos[1])
+        p1_pos_tup = str_to_tup(pos[0])
+        p2_pos_tup = str_to_tup(pos[1])
         
         return p1_pos_tup, p2_pos_tup # ((x1,y1), (x2,y2))
 
@@ -30,14 +30,15 @@ class Network():
 
             pos = self.client.recv(SIZE).decode()
             pos = pos.split(";")
-            p1_pos_tup = get_pos(pos[0])
-            p2_pos_tup = get_pos(pos[1])
+            p1_pos_tup = str_to_tup(pos[0])
+            p2_pos_tup = str_to_tup(pos[1])
 
             return p1_pos_tup, p2_pos_tup # ((x1,y1), (x2,y2))
         except:
             pass
 
-# private functions
-def get_pos(xy):
+##### private functions #####
+
+def str_to_tup(xy):
     xy = xy.split(",")
     return int(xy[0]), int(xy[1])

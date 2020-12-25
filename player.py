@@ -18,17 +18,17 @@ class Player():
         keys = pygame.key.get_pressed()
         arrow_keys = [False, False, False, False] # up down left right
 
-        if keys[pygame.K_LEFT]:
-            arrow_keys[2] = True
-        
-        if keys[pygame.K_RIGHT]:
-            arrow_keys[3] = True
-
         if keys[pygame.K_UP]:
             arrow_keys[0] = True
 
         if keys[pygame.K_DOWN]:
             arrow_keys[1] = True
+
+        if keys[pygame.K_LEFT]:
+            arrow_keys[2] = True
+        
+        if keys[pygame.K_RIGHT]:
+            arrow_keys[3] = True
 
         return bytearray(arrow_keys)
 
