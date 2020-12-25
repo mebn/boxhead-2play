@@ -62,13 +62,14 @@ def client_thread(conn, player):
     while True:
         try:
             data = conn.recv(SIZE)
+
             if not data:
                 print("disconnected")
                 break
 
             update_pos(data, player)
-            reply = pos_to_str(player)
-            conn.send(reply.encode())
+            reply = pos_to_str(player).encode()
+            conn.send(reply)
         except:
             break
 
@@ -76,14 +77,14 @@ def client_thread(conn, player):
     conn.close()
 
 
-current_player = 0
+player_number = 0
 while True:
     conn, addr = server.accept()
     print("new connection from", addr)
 
-    thread = threading. Thread(target=client_thread, args=(conn, current_player))
+    thread = threading. Thread(target=client_thread, args=(conn, player_number))
     thread.start()
 
-    current_player += 1
-    if current_player == 2:
-        current_player = 0
+    player_number += 1
+    if player_number == 2: # not the best way...  
+        player_number = 0

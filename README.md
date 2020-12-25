@@ -5,6 +5,11 @@ Skapad av [@alaad](https://gits-15.sys.kth.se/alaad) och [@nilszen](https://gits
 
 [Ersode repo](https://gits-15.sys.kth.se/ersode/indaplus20/tree/master/task-13-14).
 
+### Hur kör man?
+I en terminal, kör `python3 server.py` för att starta servern.
+
+Kör sedan `python3 client.py` i två andra terminaler för att få två spelare som man kan styra med piltangenterna!
+
 ## Information och krav
 Ni har redan blivit indelade i grupper. Om du ej blivit indelad, och ångrat dig och vill vara med i ett projekt, PMa mig på Discord ASAP.
 

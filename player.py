@@ -31,5 +31,9 @@ class Player():
 
         return bytearray(arrow_keys)
 
-    def update(self):
+    def update_draw(self):
         self.rect = (self.x, self.y, self.width, self.height)
+
+    def update_pos(self, x, y):
+        self.x = x
+        self.y = y
