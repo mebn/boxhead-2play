@@ -62,6 +62,6 @@ class Network():
 
     # Takes a string and format it into a int tuple.
     # Returns tuple.
-    def str_to_tup(xy):
+    def str_to_tup(self, xy):
         xy = xy.split(",")
         return int(xy[0]), int(xy[1])
