@@ -3,12 +3,26 @@ from player import Player
 from network import Network
 import dimensions
 
+# Clears screen and redraws elements.
 def redraw_window(win, player1, player2):
     win.fill((255, 255, 255))
     player1.draw(win)
     player2.draw(win)
 
     pygame.display.update()
+
+
+# Updates positions of players.
+def update_players(network, player1, player2):
+    response = network.get_players_updated_pos(player1.move())
+    if response != None:
+        player1_pos, player2_pos = response # every client is player 1.
+
+        player1.update_pos(player1_pos)
+        player2.update_pos(player2_pos)
+    
+    player1.update_draw()
+    player2.update_draw()
 
 
 def main():
@@ -27,16 +41,7 @@ def main():
     while is_running:
         clock.tick(60)
 
-        response = network.get_players_updated_pos(player1.move())
-        if response != None:
-            player1_pos, player2_pos = response # every client is player 1.
-
-            player1.update_pos(player1_pos)
-            player2.update_pos(player2_pos)
-        
-        player1.update_draw()
-        player2.update_draw()
-
+        update_players(network, player1, player2)
         redraw_window(win, player1, player2)
 
         for event in pygame.event.get():

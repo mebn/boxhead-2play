@@ -15,47 +15,61 @@ server.listen(2)
 print("server started...")
 
 # keep track of important stuff to be sent to clients.
-players_pos = [[0, 0], [400, 400]]
-player_hp = [100, 100]
-enemies_pos = [[100, 200], [200, 100]] # ex. 2 enemies from the beginning.
+class Entity:
+    def __init__(self, type, pos, hp):
+        self.type = type
+        self.x = pos[0]
+        self.y = pos[1]
+        self.hp = hp
 
-# Takes a list with bools and player (1 or 2).
-# Moves the player on server side.
-# Includes wall detection.
-def update_pos(direction, player):
-    movement_speed = 5
-    x = players_pos[player][0]
-    y = players_pos[player][1]
+        self.pos = [self.x, self.y]
 
-    # up
-    if direction[0] and y >= 0:
-        y -= movement_speed
+    # Used to turn a list of 2 elements into a comma seperated list.
+    def get_pos_as_str(self):
+        return str(self.pos[0]) + "," + str(self.pos[1])
 
-    # down
-    if direction[1] and y <= dimensions.HEIGHT - dimensions.PLAYER_HEIGHT:
-        y += movement_speed
+    # Takes a list with bools and player (1 or 2).
+    # Moves the player on server side.
+    # Includes wall detection.
+    def update_pos(self, direction):
+        if self.type != "player":
+            return
 
-    # left
-    if direction[2] and x >= 0:
-        x -= movement_speed
-    
-    # right
-    if direction[3] and x <= dimensions.WIDTH - dimensions.PLAYER_WIDTH:
-        x += movement_speed
+        movement_speed = 5
 
-    players_pos[player][0] = x
-    players_pos[player][1] = y
+        # up
+        if direction[0] and self.y >= 0:
+            self.y -= movement_speed
+
+        # down
+        if direction[1] and self.y <= dimensions.HEIGHT - dimensions.PLAYER_HEIGHT:
+            self.y += movement_speed
+
+        # left
+        if direction[2] and self.x >= 0:
+            self.x -= movement_speed
+        
+        # right
+        if direction[3] and self.x <= dimensions.WIDTH - dimensions.PLAYER_WIDTH:
+            self.x += movement_speed
+        
+        self.pos = [self.x, self.y]
 
 
-# Used to turn a list of 2 elements into a comma seperated list.
-# Used in all_pos_to_str()
-def player_pos_to_str(player_pos):
-    return str(player_pos[0]) + "," + str(player_pos[1])
+players = [
+    Entity("player", [0, 0], 100),
+    Entity("player", [400, 400], 100)
+]
+enemies = [
+    Entity("enemy", [100, 200], 100),
+    Entity("enemy", [200, 100], 100)
+]
+
 
 # Returns "x1,y1;x2,y2" and makes sure every client is player 1.
 def all_pos_to_str(player):
-    player1_coords = player_pos_to_str(players_pos[0])
-    player2_coords = player_pos_to_str(players_pos[1])
+    player1_coords = players[0].get_pos_as_str()
+    player2_coords = players[1].get_pos_as_str()
 
     if player == 0:
         return f"{player1_coords};{player2_coords}"
@@ -72,7 +86,6 @@ def client_thread(conn, player):
     while True:
         try:
             data = conn.recv(SIZE)
-
             if not data:
                 print("disconnected")
                 break
@@ -82,7 +95,7 @@ def client_thread(conn, player):
 
             # handle movement
             if code == codes.player_movement:
-                update_pos(data, player)
+                players[player].update_pos(data)
                 reply = all_pos_to_str(player).encode()
                 conn.send(reply)
 
@@ -109,6 +122,7 @@ while True:
 
     thread = threading.Thread(target=client_thread, args=(conn, player_number))
     thread.start()
+    print(threading.active_count())
 
     player_number += 1
     if player_number == 2: # not the best way...  
