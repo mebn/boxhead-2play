@@ -8,13 +8,6 @@ ADDRESS = "127.0.0.1"
 PORT = 8888
 SIZE = 128
 
-# server setup stuff
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-server.bind((ADDRESS, PORT))
-server.listen(2)
-print("server started...")
-
 # keep track of important stuff to be sent to clients.
 class Entity:
     def __init__(self, type, pos, hp):
@@ -81,7 +74,7 @@ class Entity:
 
 
 
-def generate_enemies(amount):
+def generate_enemies(amount, players):
     enemies_list = []
     radius = 60
 
@@ -99,14 +92,8 @@ def generate_enemies(amount):
     return enemies_list
 
 
-players = [
-    Entity("player", [0, 0], 100),
-    Entity("player", [400, 400], 100)
-]
-enemies = generate_enemies(5) # starting game with 5 enemies.
-
 # Returns "x1,y1 x2,y2" and makes sure every client is player 1.
-def players_pos_to_str(player):
+def players_pos_to_str(player, players):
     player1_coords = players[0].get_pos_as_str()
     player2_coords = players[1].get_pos_as_str()
 
@@ -123,13 +110,13 @@ def enemies_pos_to_str(enemies):
     for enemy in enemies:
         pos_str += f"{enemy.x} {enemy.y};"
 
-    return pos_str
+    return pos_str[:-1]
 
 
 # A thread that starts when a new clients connects.
-def client_thread(conn, player):
+def client_thread(conn, player, all_entites):
     # this only send one time, when connecting.
-    reply = players_pos_to_str(player).encode()
+    reply = players_pos_to_str(player, all_entites["players"]).encode()
     conn.send(reply) # sends starting pos.
 
     while True:
@@ -142,12 +129,13 @@ def client_thread(conn, player):
             code = data[:2] # can be between 00 and 99 codes. (100 events)
             data = data[2:]
 
-            # handle movement
+            # handle player movement
             if code == codes.player_movement:
                 players[player].update_player_pos(data)
-                reply = players_pos_to_str(player).encode()
+                reply = players_pos_to_str(player, all_entites["players"]).encode()
                 conn.send(reply)
 
+            # handle enemies position
             if code == codes.enemies_position:
                 for enemy in enemies:
                     enemy.update_enemy_pos(players)
@@ -168,15 +156,37 @@ def client_thread(conn, player):
     conn.close()
 
 
-player_number = 0
-while True:
-    conn, addr = server.accept()
-    print("new connection from", addr)
 
-    thread = threading.Thread(target=client_thread, args=(conn, player_number))
-    thread.start()
-    print(threading.active_count())
+if __name__ == "__main__":
+    # server setup stuff
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server.bind((ADDRESS, PORT))
+    server.listen(2)
+    print("server started...")
 
-    player_number += 1
-    if player_number == 2: # not the best way...  
-        player_number = 0
+    players = [
+        Entity("player", [0, 0], 100),
+        Entity("player", [400, 400], 100)
+    ]
+    enemies = generate_enemies(5, players) # starting game with 5 enemies.
+
+    all_entites = {
+        "players": players,
+        "enemies": enemies
+    }
+
+
+    player_number = 0
+    while True:
+        conn, addr = server.accept()
+        print("new connection from", addr)
+
+        thread = threading.Thread(target=client_thread,
+            args=(conn, player_number, all_entites))
+        thread.start()
+        print(threading.active_count())
+
+        player_number += 1
+        if player_number == 2: # not the best way...  
+            player_number = 0
