@@ -1,7 +1,7 @@
 import socket
 import codes
 
-SIZE = 128
+SIZE = 256
 
 class Network():
     def __init__(self):
@@ -21,7 +21,7 @@ class Network():
 
     # Gets a formated position as ((x1,y1), (x2,y2))
     def get_starting_pos(self):
-        pos = self.pos.split(";")
+        pos = self.pos.split()
         p1_pos_tup = str_to_tup(pos[0])
         p2_pos_tup = str_to_tup(pos[1])
         
@@ -35,11 +35,27 @@ class Network():
             self.client.send(codes.player_movement + direction)
 
             pos = self.client.recv(SIZE).decode()
-            pos = pos.split(";")
+            pos = pos.split()
             p1_pos_tup = str_to_tup(pos[0])
             p2_pos_tup = str_to_tup(pos[1])
 
             return p1_pos_tup, p2_pos_tup # ((x1,y1), (x2,y2))
+        except:
+            pass
+
+    def get_enemies_pos(self):
+        try:
+            self.client.send(codes.enemies_position)
+            all_enemies_pos = self.client.recv(SIZE).decode() # as "x1 y1;x2 y2;x3 y3;"
+            all_enemies_pos = all_enemies_pos.split(";") # as ["x1 y1", "x2 y2", "x3 y3", ""]
+            all_enemies_pos.pop()
+            
+            formatted_pos = []
+            for pos in all_enemies_pos:
+                x, y = pos.split()
+                formatted_pos.append( (int(x), int(y)) )
+
+            return formatted_pos # as [(x1, y1), (x2, y2), (x3, y3)]
         except:
             pass
 
