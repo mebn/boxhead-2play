@@ -35,7 +35,7 @@ class Player():
         return bytes(arrow_keys)
 
     # Update player rcet to be drawn on canvas.
-    def update_draw(self):
+    def update_rect(self):
         self.rect = (self.x, self.y, self.width, self.height)
 
     # Updates position of player after getting new coords from server.
