@@ -47,8 +47,7 @@ class Network():
         try:
             self.client.send(codes.enemies_position)
             all_enemies_pos = self.client.recv(SIZE).decode() # as "x1 y1;x2 y2;x3 y3;"
-            all_enemies_pos = all_enemies_pos.split(";") # as ["x1 y1", "x2 y2", "x3 y3", ""]
-            all_enemies_pos.pop()
+            all_enemies_pos = all_enemies_pos.split(";") # as ["x1 y1", "x2 y2", "x3 y3"]
             
             formatted_pos = []
             for pos in all_enemies_pos:
@@ -59,10 +58,10 @@ class Network():
         except:
             pass
 
-##### private functions #####
+    ##### private functions #####
 
-# Takes a string and format it into a int tuple.
-# Returns tuple.
-def str_to_tup(xy):
-    xy = xy.split(",")
-    return int(xy[0]), int(xy[1])
+    # Takes a string and format it into a int tuple.
+    # Returns tuple.
+    def str_to_tup(self, xy):
+        xy = xy.split(",")
+        return int(xy[0]), int(xy[1])
