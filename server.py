@@ -50,6 +50,7 @@ class Entity:
         self.pos = [self.x, self.y]
 
 
+    # This is kinda buggy atm.
     def update_enemy_pos(self, players):
         if self.type != "enemy":
             return
@@ -70,8 +71,6 @@ class Entity:
             self.y -= movement_speed
 
         self.pos = [self.x, self.y]
-
-
 
 
 def generate_enemies(amount, players):
@@ -103,6 +102,14 @@ def players_pos_to_str(player, players):
         return f"{player2_coords} {player1_coords}"
 
 
+# formattes hp of players to "100 100"
+def players_hp_as_str(player, players):
+    if player == 0:
+        return f"{players[0].hp} {players[1].hp}"
+    else:
+        return f"{players[1].hp} {players[0].hp}"
+
+
 # formattes enemies pos to a string like "x1 y1;x2 y2;x3 y3;"
 def enemies_pos_to_str(enemies):
     pos_str = ""
@@ -115,10 +122,6 @@ def enemies_pos_to_str(enemies):
 
 # A thread that starts when a new clients connects.
 def client_thread(conn, player, all_entites):
-    # this only send one time, when connecting.
-    reply = players_pos_to_str(player, all_entites["players"]).encode()
-    conn.send(reply) # sends starting pos.
-
     while True:
         try:
             data = conn.recv(SIZE)
@@ -130,8 +133,10 @@ def client_thread(conn, player, all_entites):
             data = data[2:]
 
             # handle player movement
-            if code == codes.player_movement:
-                players[player].update_player_pos(data)
+            if code == codes.player_pos:
+                if data:
+                    players[player].update_player_pos(data)
+
                 reply = players_pos_to_str(player, all_entites["players"]).encode()
                 conn.send(reply)
 
@@ -144,7 +149,8 @@ def client_thread(conn, player, all_entites):
                 conn.send(reply)
 
             if code == codes.player_hp:
-                pass
+                reply = players_hp_as_str(player, players).encode()
+                conn.send(reply)
 
             if code == codes.bullets_position:
                 pass
@@ -171,6 +177,7 @@ if __name__ == "__main__":
     ]
     enemies = generate_enemies(5, players) # starting game with 5 enemies.
 
+    # pass 1 big object as paramater.
     all_entites = {
         "players": players,
         "enemies": enemies

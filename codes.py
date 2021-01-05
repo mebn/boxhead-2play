@@ -3,8 +3,9 @@
 # get player movement data back from server
 # and handle it correctly on client side.
 
-player_movement = b"00"
-enemies_position = b"01"
-bullets_position = b"02"
-player_hp = b"03"
+player_pos = b"00"
+player_hp = b"01"
+
+enemies_position = b"02"
+bullets_position = b"03"
 

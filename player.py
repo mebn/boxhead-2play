@@ -1,9 +1,10 @@
 import pygame
 
 class Player():
-    def __init__(self, pos, width, height, color):
+    def __init__(self, pos, hp, width, height, color):
         self.x = pos[0]
         self.y = pos[1]
+        self.hp = hp
         self.width = width
         self.height = height
         self.color = color
