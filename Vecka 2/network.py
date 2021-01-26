@@ -1,6 +1,7 @@
 import socket
 import codes
 
+# recive size (from server)
 SIZE = 256
 
 class Network():

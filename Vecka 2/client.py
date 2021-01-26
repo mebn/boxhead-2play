@@ -3,18 +3,23 @@ from player import Player
 from network import Network
 import dimensions
 
+from Zombie import *
+
 background = pygame.image.load('Images/background.png')
 
 # Clears screen and redraws elements.
-def redraw_window(win, player1, player2, enemies_pos):
+def redraw_window(win, stuff_to_draw):
     win.blit(background, (0,0))
+
+    player1 = stuff_to_draw["player1"]
+    player2 = stuff_to_draw["player2"]
+    zombies = stuff_to_draw["zombies"]
 
     player1.draw(win)
     player2.draw(win)
 
-    for enemy_pos in enemies_pos:
-        x, y = enemy_pos
-        pygame.draw.rect(win, (0,0,255), (x, y, dimensions.ENEMY_WIDTH, dimensions.ENEMY_HEIGHT))
+    for zombie in zombies:
+        zombie.draw(win, player1.position())
 
     pygame.display.update()
 
@@ -40,6 +45,10 @@ def update_players(network, player1, player2):
     player2.hp = p2_hp # for graphics on client side.
 
 
+
+
+
+
 def main():
     # setup window
     win = pygame.display.set_mode((dimensions.WIDTH, dimensions.HEIGHT))
@@ -54,16 +63,37 @@ def main():
     
     clock = pygame.time.Clock()
 
+    # zombie stuff
+    zombies_last_tick = pygame.time.get_ticks()
+    spawn_interval = 5000
+    zombies = pygame.sprite.Group()
+
     is_running = True
     while is_running:
         clock.tick(60)
 
-        all_sprites = pygame.sprite.Group()
-        all_sprites.draw(win)
-
         enemies_pos = network.get_enemies_pos()
         update_players(network, player1, player2)
-        redraw_window(win, player1, player2, enemies_pos)
+
+        # creating 4 zombies every 5 seconds
+        zombies_current_tick = pygame.time.get_ticks() # getting the current time ticks
+        if zombies_current_tick - zombies_last_tick >= spawn_interval:
+            zombies_last_tick = zombies_current_tick
+
+            for i in range(4):
+                zombies.add(Zombie())
+
+
+        stuff_to_draw = {
+            "player1": player1,
+            "player2": player2,
+            "enemies_pos": enemies_pos,
+            "zombies": zombies
+        }
+
+        redraw_window(win, stuff_to_draw)
+
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
