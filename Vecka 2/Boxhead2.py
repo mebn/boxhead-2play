@@ -61,9 +61,9 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Box Head")
 
 # Sounds
-bullet_sound = pygame.mixer.Sound('gun.wav')
-zombie_sound = pygame.mixer.Sound('zombie.wav')
-grunt_sound = pygame.mixer.Sound('gruntsound.wav')
+bullet_sound = pygame.mixer.Sound('sounds/gun.wav')
+zombie_sound = pygame.mixer.Sound('sounds/zombie.wav')
+grunt_sound = pygame.mixer.Sound('sounds/gruntsound.wav')
 pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
 
 # Font

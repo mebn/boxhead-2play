@@ -13,10 +13,11 @@ class Player():
         self.width = width
         self.height = height
         self.color = color
+
         self.vel = 5
-        self.rect = (self.x, self.y, self.width, self.height)
         self.arrow_keys = [False, False, False, False]
         self.direction = 0
+        
         self.rect = self.image.get_rect()
         self.rect.center = (dimensions.WIDTH / 2, dimensions.HEIGHT / 2)
         self.rect.centerx = random.randint(1, dimensions.HEIGHT)
@@ -24,32 +25,36 @@ class Player():
 
     # Draws on canvas.
     def draw(self, win):
-       # pygame.draw.rect(win, self.color, self.rect)
+        win.blit(self.image,(self.x,self.y))
 
         if self.direction == 3:
             self.image = pygame.image.load('./Images/LEFT.png')
+        
         if self.direction == 2:
             self.image = pygame.image.load('./Images/FacingLeft.png')
+        
         if self.direction == 0:
             self.image = pygame.image.load('./Images/FacingUp.png')
+        
         if self.direction == 1:
             self.image = pygame.image.load('./Images/FacingDown.png')
-            # if self.direction == "UR":
-            #     self.image = pygame.image.load('Images/NE.png')
-            # if self.direction == "UL":
-            #     self.image = pygame.image.load('Images/NW.png')
-            # if self.direction == "DR":
-            #     self.image = pygame.image.load('Images/SE.png')
-            # if self.direction == "DL":
-            #     self.image = pygame.image.load('Images/SW.png')
+        
+        # if self.direction == "UR":
+        #     self.image = pygame.image.load('Images/NE.png')
+        # if self.direction == "UL":
+        #     self.image = pygame.image.load('Images/NW.png')
+        # if self.direction == "DR":
+        #     self.image = pygame.image.load('Images/SE.png')
+        # if self.direction == "DL":
+        #     self.image = pygame.image.load('Images/SW.png')
 
 
     # Sends keystrokes to server as a bool list.
     def move(self):
         keys = pygame.key.get_pressed()
         self.arrow_keys = [False, False, False, False]
-        # up down left right
 
+        # 0=up 1=down 2=left 3=right
         if keys[pygame.K_UP]:
             self.arrow_keys[0] = True
             self.direction = 0
@@ -57,17 +62,16 @@ class Player():
         if keys[pygame.K_DOWN]:
             self.arrow_keys[1] = True
             self.direction = 1
+
         if keys[pygame.K_LEFT]:
             self.arrow_keys[2] = True
             self.direction = 2
+
         if keys[pygame.K_RIGHT]:
             self.arrow_keys[3] = True
             self.direction = 3
-        return bytes(self.arrow_keys)
 
-    # Update player rcet to be drawn on canvas.
-    def update_rect(self):
-        self.rect = (self.x, self.y, self.width, self.height)
+        return bytes(self.arrow_keys)
 
     # Updates position of player after getting new coords from server.
     def update_pos(self, pos):

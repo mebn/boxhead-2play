@@ -33,13 +33,13 @@ class Network():
 
     def get_player_direction(self,direction):
         try:
-            direction =str(direction)
+            direction = str(direction)
             direction = direction.encode()
             self.client.send(codes.player_direction + direction)
             direction = self.client.recv(SIZE).decode()
             p1_direction, p2_direction = direction.split()
-            return int(p1_direction), int(p2_direction)
 
+            return int(p1_direction), int(p2_direction)
         except:
             pass
 
@@ -52,6 +52,7 @@ class Network():
             return int(p1_hp), int(p2_hp)
         except:
             pass
+
 
     ##### ENEMY METHODS #####
 
